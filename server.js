@@ -1,6 +1,7 @@
 import express from "express";
 import fs from "fs";
 import * as operaciones from "./api/operaciones.js";
+import { validarParametros } from "./api/validaciones.js";
 
 const app = express();
 
@@ -44,10 +45,11 @@ app.get("/info", async (req, res) => {
       contenidoObj: {},
       size: 0,
     };
-    let archivo = process.cwd() + "\\package.json";
+    //let archivo = process.cwd() + "\\package.json";
 
     //Leo un archivo en forma asincrónica
-    let page = await fs.promises.readFile(archivo, "utf-8");
+    // let page = await fs.promises.readFile(archivo, "utf-8");
+    let page = await fs.promises.readFile("package.json", "utf-8");
     info.contenidoStr = page;
     info.contenidoObj = JSON.parse(page);
     info.size = page.length;
@@ -70,25 +72,6 @@ app.get("/info", async (req, res) => {
 /* ---------------------- INCISO 4  --------------------------- */
 /* -- get ‘/operaciones’, que reciba por query-params dos ----- */
 /* -- números y la operación a realizar entre ellos ----------- */
-
-function validarParametros(num1, num2, operacion) {
-  //valido que lleguen todos los parametros
-  if (num1 && num2 && operacion) {
-    //valido que se seleccione una operacion valida
-    if (
-      operacion == "suma" ||
-      operacion == "resta" ||
-      operacion == "multiplicacion" ||
-      operacion == "division"
-    ) {
-      //valido que se manden numeros
-      if (num1 != "NaN" && num2 != "NaN") {
-        return true;
-      }
-    }
-  }
-  return false;
-}
 
 app.get("/operaciones", (req, res) => {
   let { num1, num2, operacion } = req.query;
